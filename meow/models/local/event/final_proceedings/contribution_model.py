@@ -384,7 +384,7 @@ class ContributionData:
             "authors_groups": [g.as_dict() for g in self.authors_groups],
             "has_paper": self.has_paper(),
             "has_slides": self.has_slides(),
-            "has_posters": self.has_poster(),
+            "has_posters": self.has_posters(),
             "paper_name": self.paper_name(),
             "slides_name": self.slides_name(),
             "posters_name": self.posters_name(),
