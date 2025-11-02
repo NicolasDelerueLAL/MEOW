@@ -109,10 +109,15 @@ async def write_metadata_task(
 
     await jacow_pdf_file.unlink(missing_ok=True)
 
-    logger.info(f"{original_pdf_file} --> {jacow_pdf_file}")
+    logger.info(f"{original_pdf_file} --> {jacow_pdf_file} {session}")
 
     if not session:
+        logger.warning(
+            f"{original_pdf_file} --> {jacow_pdf_file} -> EXIT session not found"
+        )
         return None
+
+    logger.info(f"{original_pdf_file} --> {jacow_pdf_file}")
 
     header_data: dict | None = get_header_data(contribution)
     footer_data: dict | None = get_footer_data(contribution, session)
