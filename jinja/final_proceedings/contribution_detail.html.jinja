@@ -68,6 +68,16 @@
 </div>
 {% endif %}
 
+include_event_posters: {{ include_event_posters }}
+contribution.is_posters_included: {{ contribution.is_posters_included }}
+contribution.has_posters: {{ contribution.has_posters }}
+
+TEST-----
+    <a data-href="pdf/{{ contribution.posters_name }}" 
+        onclick="openUrl(`pdf/{{ contribution.posters_name }}`)" 
+        href="javascript:void(0);">{{ contribution.code|upper }}</a>
+        ------TEST
+
 {% if is_published: %}
 <div class="contrib-paper">
     <b>Paper:</b>

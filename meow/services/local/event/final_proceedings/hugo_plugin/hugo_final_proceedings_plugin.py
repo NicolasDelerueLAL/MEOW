@@ -258,9 +258,14 @@ class HugoProceedingsPlugin(AbstractFinalProceedingsPlugin):
                 base_path = Path(self.src_dir, "layouts", "partials", "contributions")
 
                 if contribution.code:
-                    # logger.info(f"render_contribution {code}")
 
                     is_published = self.filter_published_contributions(contribution)
+
+                    logger.info(f"render_contribution {code}")
+                    logger.info(f"is_published {is_published}")
+                    logger.info(f"self.config.include_event_slides {self.config.include_event_slides}")
+                    logger.info(f"self.config.include_event_posters {self.config.include_event_posters}")
+
 
                     await Path(base_path, f"{code}.html").write_text(
                         await self.template.render_contribution_partial(
