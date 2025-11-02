@@ -5,7 +5,7 @@ from anyio import Path, create_task_group, CapacityLimiter
 from anyio import create_memory_object_stream, ClosedResourceError, EndOfStream
 from anyio.streams.memory import MemoryObjectSendStream
 
-from meow.models.local.event.final_proceedings.contribution_model import FileData
+from meow.models.local.event.final_proceedings.contribution_model import ContributionPosterData, FileData
 
 from meow.models.local.event.final_proceedings.proceedings_data_model import (
     ProceedingsData,
@@ -24,7 +24,7 @@ async def copy_contribution_posters(
 ) -> ProceedingsData:
     """ """
 
-    files_data: list[FileData] = await extract_proceedings_posters(
+    files_data: list[ContributionPosterData] = await extract_proceedings_posters(
         proceedings_data,
         callback,
     )
