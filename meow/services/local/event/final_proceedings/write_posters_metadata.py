@@ -124,6 +124,8 @@ async def write_metadata_task(
         else ""
     )
 
+    print(f"{original_pdf_file} --> {jacow_pdf_file}")
+
     await draw_frame_anyio(
         str(original_pdf_file),
         str(jacow_pdf_file),
@@ -138,7 +140,5 @@ async def write_metadata_task(
     )
 
     await pdf_metadata_qpdf(str(jacow_pdf_file), metadata_pikepdf, xml_metadata_pikepdf)
-
-    # print(f"{original_pdf_file} --> {jacow_pdf_file}")
 
     # await pdf_linearize_qpdf(str(original_pdf_file), str(jacow_pdf_file), None, None)
