@@ -33,7 +33,7 @@ async def copy_contribution_papers(
     total_files: int = len(files_data)
     elaborated_files: int = 0
 
-    # logger.debug(f'copy_contribution_papers - files: {total_files}')
+    logger.info(f'copy_contribution_papers - files: {total_files}')
 
     file_cache_name = f"{proceedings_data.event.id}_tmp"
     file_cache_dir: Path = Path("var", "run", file_cache_name)
