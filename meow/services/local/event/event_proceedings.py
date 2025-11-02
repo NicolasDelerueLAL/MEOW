@@ -428,7 +428,7 @@ async def _event_proceedings(
         )
 
         # Blocking
-        [proceedings, slides_data] = await download_contributions_posters(
+        [proceedings, posters_data] = await download_contributions_posters(
             proceedings,
             cookies,
             settings,
@@ -440,7 +440,7 @@ async def _event_proceedings(
             type="log",
             value=ClientLog(
                 severity=ClientLogSeverity.INFO,
-                message=f"Downloaded {len(slides_data)} posters.",
+                message=f"Downloaded {len(posters_data)} posters.",
             ),
         )
 
