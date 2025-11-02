@@ -198,17 +198,33 @@ def contribution_data_factory(
     """ """
 
     is_slides_included: bool = False
-    is_posters_included: bool = False
 
     if slides_data and slides_data.state:
-        if slides_data.state == EditableData.EditableState.accepted:
+        if (
+            slides_data.state == EditableData.EditableState.accepted
+            or slides_data.state == EditableData.EditableState.accepted_by_submitter
+        ):
             for r in slides_data.all_revisions:
-                if r.is_qa_approved:
+                if r.is_qa_approved or r.is_accepted:
                     is_slides_included = True
-                    is_posters_included = True
                     break
 
     logger.info(f"is_slides_included: {is_slides_included}")
+
+    """ """
+
+    is_posters_included: bool = False
+
+    if posters_data and posters_data.state:
+        if (
+            posters_data.state == EditableData.EditableState.accepted
+            or posters_data.state == EditableData.EditableState.accepted_by_submitter
+        ):
+            for r in posters_data.all_revisions:
+                if r.is_qa_approved or r.is_accepted:
+                    is_posters_included = True
+                    break
+
     logger.info(f"is_posters_included: {is_posters_included}")
 
     """ """
