@@ -91,14 +91,15 @@ async def write_metadata_task(
     settings,
     pdf_cache_dir,
 ):
+    current_file: FileData = current_poster.paper
+
     contribution: ContributionData = current_poster.contribution
+
+    logger.info(f"contribution.session_id={contribution.session_id}")
 
     session = sessions.get(contribution.session_id)
 
-    if not session:
-        return None
-
-    current_file = current_poster.paper
+    logger.info(f"contribution.session_id={contribution.session_id}")
 
     original_pdf_name = f"{current_file.filename}"
     original_pdf_file = Path(pdf_cache_dir, original_pdf_name)
@@ -107,6 +108,11 @@ async def write_metadata_task(
     jacow_pdf_file = Path(pdf_cache_dir, jacow_pdf_name)
 
     await jacow_pdf_file.unlink(missing_ok=True)
+
+    logger.info(f"{original_pdf_file} --> {jacow_pdf_file}")
+
+    if not session:
+        return None
 
     header_data: dict | None = get_header_data(contribution)
     footer_data: dict | None = get_footer_data(contribution, session)
@@ -123,8 +129,6 @@ async def write_metadata_task(
         if contribution.peer_reviewing_accepted
         else ""
     )
-
-    print(f"{original_pdf_file} --> {jacow_pdf_file}")
 
     await draw_frame_anyio(
         str(original_pdf_file),
