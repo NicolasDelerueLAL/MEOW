@@ -5,7 +5,10 @@ from anyio import Path, create_task_group, CapacityLimiter
 from anyio import create_memory_object_stream, ClosedResourceError, EndOfStream
 from anyio.streams.memory import MemoryObjectSendStream
 
-from meow.models.local.event.final_proceedings.contribution_model import ContributionPosterData, FileData
+from meow.models.local.event.final_proceedings.contribution_model import (
+    ContributionPosterData,
+    FileData,
+)
 
 from meow.models.local.event.final_proceedings.proceedings_data_model import (
     ProceedingsData,
@@ -24,7 +27,7 @@ async def copy_contribution_posters(
 ) -> ProceedingsData:
     """ """
 
-    files_data: list[ContributionPosterData] = await extract_proceedings_posters(
+    files_data: list[FileData] = await extract_proceedings_posters(
         proceedings_data,
         callback,
     )
@@ -32,7 +35,7 @@ async def copy_contribution_posters(
     total_files: int = len(files_data)
     elaborated_files: int = 0
 
-    # logger.debug(f'copy_contribution_papers - files: {total_files}')
+    logger.info(f"copy_contribution_papers - files: {total_files}")
 
     file_cache_name = f"{proceedings_data.event.id}_tmp"
     file_cache_dir: Path = Path("var", "run", file_cache_name)
@@ -108,7 +111,9 @@ async def file_copy_task(
 
             await dest_path.unlink(missing_ok=True)
 
-            # logger.info(f"{pdf_file} ({'exists!' if pdf_exists else 'not exists!!!'}) -> {pdf_dest}")
+            logger.info(
+                f"{file_path} ({'exists!' if file_exists else 'not exists!!!'}) -> {dest_path}"
+            )
 
             if file_exists:
                 # await dest_path.hardlink_to(file_path)
