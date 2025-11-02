@@ -473,3 +473,17 @@ class ContributionPaperData:
 
     def as_json(self) -> str:
         return json_encode(self.as_dict()).decode()
+
+
+@dataclass(kw_only=True, slots=True)
+class ContributionPosterData:
+    """File Data"""
+
+    contribution: ContributionData
+    poster: FileData
+
+    def as_dict(self) -> dict:
+        return asdict(self)
+
+    def as_json(self) -> str:
+        return json_encode(self.as_dict()).decode()

@@ -1,5 +1,4 @@
 import io
-import pathlib
 import logging as lg
 
 from anyio import Path, to_process as to_task  # to_thread

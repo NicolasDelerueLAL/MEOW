@@ -3,6 +3,7 @@ from typing import Callable
 
 from meow.models.local.event.final_proceedings.contribution_model import (
     ContributionPaperData,
+    ContributionPosterData,
     FileData,
 )
 from meow.models.local.event.final_proceedings.proceedings_data_model import (
@@ -77,13 +78,39 @@ async def extract_proceedings_posters(
         ):
             revision_data = contribution_data.posters.latest_revision
             for file_data in revision_data.files:
-
                 # logger.debug(f"""{file_data.uuid} -
                 #             {file_data.filename} -
                 #             {file_data.file_type}""")
 
                 if file_data.file_type == FileData.FileType.poster:
                     posters.append(file_data)
+
+    return posters
+
+
+async def extract_contributions_posters(
+    proceedings_data: ProceedingsData, callback: Callable
+) -> list[ContributionPosterData]:
+    posters: list[ContributionPosterData] = []
+
+    for contribution_data in proceedings_data.contributions:
+        if (
+            callback(contribution_data)
+            and contribution_data.posters
+            and contribution_data.posters.latest_revision
+        ):
+            revision_data = contribution_data.posters.latest_revision
+            for file_data in revision_data.files:
+                # logger.debug(f"""{file_data.uuid} -
+                #             {file_data.filename} -
+                #             {file_data.file_type}""")
+
+                if file_data.file_type == FileData.FileType.poster:
+                    posters.append(
+                        ContributionPosterData(
+                            contribution=contribution_data, poster=file_data
+                        )
+                    )
 
     return posters
 

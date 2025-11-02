@@ -3,9 +3,13 @@ from typing import Callable
 
 from anyio import Path, create_task_group
 
-from meow.models.local.event.final_proceedings.contribution_model import FileData
+from meow.models.local.event.final_proceedings.contribution_model import (
+    ContributionData,
+    ContributionPosterData,
+    FileData,
+)
 from meow.models.local.event.final_proceedings.proceedings_data_utils import (
-    extract_proceedings_posters,
+    extract_contributions_posters,
 )
 
 from meow.models.local.event.final_proceedings.proceedings_data_model import (
@@ -13,7 +17,18 @@ from meow.models.local.event.final_proceedings.proceedings_data_model import (
 )
 from meow.models.local.event.final_proceedings.session_model import SessionData
 from meow.services.local.event.final_proceedings.event_pdf_utils import (
+    draw_frame_anyio,
     pdf_linearize_qpdf,
+    pdf_metadata_qpdf,
+)
+from meow.services.local.event.final_proceedings.write_metadata_utils import (
+    get_metadata_pikepdf,
+    get_side_data,
+    get_xml_metatdata_pikepdf,
+)
+from meow.services.local.event.final_proceedings.write_metadata_utils import (
+    get_footer_data,
+    get_header_data,
 )
 
 
@@ -27,12 +42,12 @@ async def write_posters_metadata(
 
     logger.info("event_final_proceedings - write_posters_metadata")
 
-    slides_data: list[FileData] = await extract_proceedings_posters(
+    posters_data: list[ContributionPosterData] = await extract_contributions_posters(
         proceedings_data,
         callback,
     )
 
-    total_files: int = len(slides_data)
+    total_files: int = len(posters_data)
 
     logger.info(f"write_posters_metadata - files: {total_files}")
 
@@ -45,10 +60,11 @@ async def write_posters_metadata(
         sessions_dict[session.code] = session
 
     async with create_task_group() as tg:
-        for current_slide in slides_data:
+        for current_poster in posters_data:
             tg.start_soon(
                 write_metadata_task,
-                current_slide,
+                proceedings_data,
+                current_poster,
                 sessions_dict,
                 settings,
                 pdf_cache_dir,
@@ -69,15 +85,64 @@ async def write_posters_metadata(
 
 
 async def write_metadata_task(
-    current_slide: FileData, sessions, settings, pdf_cache_dir
+    proceedings_data,
+    current_poster: ContributionPosterData,
+    sessions,
+    settings,
+    pdf_cache_dir,
 ):
-    original_pdf_name = f"{current_slide.filename}"
+    contribution: ContributionData = current_poster.contribution
+
+    session = sessions.get(contribution.session_id)
+
+    if not session:
+        return None
+
+    current_file = current_poster.paper
+
+    original_pdf_name = f"{current_file.filename}"
     original_pdf_file = Path(pdf_cache_dir, original_pdf_name)
 
-    jacow_pdf_name = f"{current_slide.filename}_jacow"
+    jacow_pdf_name = f"{current_file.filename}_jacow"
     jacow_pdf_file = Path(pdf_cache_dir, jacow_pdf_name)
 
     await jacow_pdf_file.unlink(missing_ok=True)
+
+    header_data: dict | None = get_header_data(contribution)
+    footer_data: dict | None = get_footer_data(contribution, session)
+    side_data = await get_side_data(settings, pdf_cache_dir)
+
+    # metadata_mutool = get_metadata_mutool(contribution)
+    metadata_pikepdf: dict | None = get_metadata_pikepdf(contribution)
+
+    # xml_metadata_mutool = get_xml_metatdata_mutool(contribution)
+    xml_metadata_pikepdf: dict | None = get_xml_metatdata_pikepdf(contribution)
+
+    pre_print: str = (
+        settings.get("pre_print", "This is a preprint")
+        if contribution.peer_reviewing_accepted
+        else ""
+    )
+
+    async def _task_jacow_files():
+        await draw_frame_anyio(
+            str(original_pdf_file),
+            str(jacow_pdf_file),
+            contribution.page,
+            pre_print,
+            header_data,
+            footer_data,
+            side_data,
+            None,
+            None,
+            True,
+        )
+
+        await pdf_metadata_qpdf(
+            str(jacow_pdf_file), metadata_pikepdf, xml_metadata_pikepdf
+        )
+
+    await _task_jacow_files()
 
     # print(f"{original_pdf_file} --> {jacow_pdf_file}")
 
