@@ -91,7 +91,7 @@ async def write_metadata_task(
     settings,
     pdf_cache_dir,
 ):
-    current_file: FileData = current_poster.paper
+    current_file: FileData = current_poster.poster
 
     contribution: ContributionData = current_poster.contribution
 
