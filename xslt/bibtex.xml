@@ -106,9 +106,8 @@
     language = {</xsl:text><xsl:value-of select="language"/><xsl:text>}</xsl:text>
 <xsl:text>,</xsl:text>
 <xsl:text>
-    eventdate = {</xsl:text><xsl:value-of select="conference/start-date"/><xsl:text>/</xsl:text><xsl:value-of select="conference/end-date"/><xsl:text>}
+    eventdate = {</xsl:text><xsl:value-of select="conference/start-date"/><xsl:text>/</xsl:text><xsl:value-of select="conference/end-date"/><xsl:text>},
 </xsl:text>
-<xsl:text>,</xsl:text>
 <xsl:text>}</xsl:text>
 </xsl:template>
 
