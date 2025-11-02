@@ -205,7 +205,7 @@ def contribution_data_factory(
             or slides_data.state == EditableData.EditableState.accepted_by_submitter
         ):
             for r in slides_data.all_revisions:
-                if r.is_qa_approved or r.is_accepted:
+                if r.is_qa_approved:
                     is_slides_included = True
                     break
 
@@ -221,7 +221,7 @@ def contribution_data_factory(
             or posters_data.state == EditableData.EditableState.accepted_by_submitter
         ):
             for r in posters_data.all_revisions:
-                if r.is_qa_approved or r.is_accepted:
+                if r.is_qa_approved:
                     is_posters_included = True
                     break
 
