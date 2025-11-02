@@ -26,8 +26,8 @@ def material_data_factory(material: Any) -> MaterialData:
         title=material.get("title"),
         description=material.get("description"),
         external_download_url=material.get("external_download_url"),
-        section=material.get('section'),
-        index=material.get('index')
+        section=material.get("section"),
+        index=material.get("index"),
     )
 
     return material_data
@@ -56,9 +56,11 @@ def event_data_factory(event: Any, settings: dict) -> EventData:
     doi_conference = settings.get("doi_conference", "FEL2022")
 
     # https://doi.org/10.18429/JACoW-PCaPAC2022
-    doi_url = f'{doi_proto}://{doi_domain}/{doi_context}/{doi_organization}-{doi_conference}'
+    doi_url = (
+        f"{doi_proto}://{doi_domain}/{doi_context}/{doi_organization}-{doi_conference}"
+    )
     # DOI:10.18429/JACoW-PCaPAC2022
-    doi_label = f'{doi_context}/{doi_organization}-{doi_conference}'
+    doi_label = f"{doi_context}/{doi_organization}-{doi_conference}"
 
     series = settings.get("series", "")
     series_number = settings.get("series_number", "")
@@ -72,17 +74,11 @@ def event_data_factory(event: Any, settings: dict) -> EventData:
     paper_license_text = settings.get("paper_license_text", "")
 
     start = datetime_localize(
-        datedict_to_tz_datetime(
-            event.get("start_dt")
-        ),
-        event_timezone
+        datedict_to_tz_datetime(event.get("start_dt")), event_timezone
     )
 
     end = datetime_localize(
-        datedict_to_tz_datetime(
-            event.get("end_dt")
-        ),
-        event_timezone
+        datedict_to_tz_datetime(event.get("end_dt")), event_timezone
     )
 
     event_data = EventData(
@@ -107,7 +103,7 @@ def event_data_factory(event: Any, settings: dict) -> EventData:
         site_license_text=site_license_text,
         site_license_url=site_license_url,
         paper_license_icon_url=paper_license_icon_url,
-        paper_license_text=paper_license_text
+        paper_license_text=paper_license_text,
     )
 
     # logger.info(event_data.as_dict())
@@ -122,10 +118,20 @@ def event_keyword_factory(keyword: str) -> KeywordData:
 
     return keyword_data
 
-def _generate_affiliations(affiliation: str, multiple_affiliations: list[str]) -> set[str]:
-    affiliations = [affiliation] if affiliation else []
 
-    return set(affiliations + multiple_affiliations)
+def _generate_affiliations(
+    affiliation: str, multiple_affiliations: list[str]
+) -> set[str]:
+    affiliations = []
+
+    if affiliation:
+        affiliations += [a.strip() for a in affiliation.split(";") if a.strip()]
+
+    if multiple_affiliations:
+        affiliations += [a.strip() for a in multiple_affiliations if a.strip()]
+
+    return set(affiliations)
+
 
 def event_person_factory(person: dict) -> PersonData:
     first = person.get("first_name").strip()
@@ -151,7 +157,6 @@ def event_person_factory(person: dict) -> PersonData:
 
 
 def event_affiliation_factory(affiliation: dict) -> AffiliationData:
-
     affiliation_data = AffiliationData(
         id=slugify(affiliation.get("name")),
         name=affiliation.get("name").strip(),

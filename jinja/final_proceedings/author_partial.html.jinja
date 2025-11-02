@@ -15,7 +15,7 @@
     <div>
       <a data-href="author/{{ author.id|lower }}/index.html"
         onclick="openUrl(`author/{{ author.id|lower }}/index.html`)" href="javascript:void(0);">
-        <b>{{ author.last }} {{ author.first }}</b>
+        <b>{{ author.last }}, {{ author.first }}</b>
       </a>
     </div>
     {% if author.affiliations | length %}
