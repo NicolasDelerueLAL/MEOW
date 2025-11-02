@@ -55,9 +55,9 @@ async def write_posters_metadata(
     pdf_cache_dir: Path = Path("var", "run", dir_name)
     await pdf_cache_dir.mkdir(exist_ok=True, parents=True)
 
-    sessions_dict: dict[str, SessionData] = dict()
+    sessions_dict: dict[int, SessionData] = dict()
     for session in proceedings_data.sessions:
-        sessions_dict[session.code] = session
+        sessions_dict[session.id] = session
 
     async with create_task_group() as tg:
         for current_poster in posters_data:
