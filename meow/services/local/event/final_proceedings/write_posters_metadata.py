@@ -110,7 +110,7 @@ async def write_metadata_task(
 
     header_data: dict | None = get_header_data(contribution)
     footer_data: dict | None = get_footer_data(contribution, session)
-    side_data = await get_side_data(settings, pdf_cache_dir)
+    side_data: dict = await get_side_data(settings, pdf_cache_dir)
 
     # metadata_mutool = get_metadata_mutool(contribution)
     metadata_pikepdf: dict | None = get_metadata_pikepdf(contribution)
@@ -124,26 +124,21 @@ async def write_metadata_task(
         else ""
     )
 
-    async def _task_jacow_files():
-        await draw_frame_anyio(
-            str(original_pdf_file),
-            str(jacow_pdf_file),
-            contribution.page,
-            pre_print,
-            header_data,
-            footer_data,
-            side_data,
-            None,
-            None,
-            True,
-        )
+    print(f"{original_pdf_file} --> {jacow_pdf_file}")
 
-        await pdf_metadata_qpdf(
-            str(jacow_pdf_file), metadata_pikepdf, xml_metadata_pikepdf
-        )
+    await draw_frame_anyio(
+        str(original_pdf_file),
+        str(jacow_pdf_file),
+        contribution.page,
+        pre_print,
+        header_data,
+        footer_data,
+        side_data,
+        None,
+        None,
+        True,
+    )
 
-    await _task_jacow_files()
+    await pdf_metadata_qpdf(str(jacow_pdf_file), metadata_pikepdf, xml_metadata_pikepdf)
 
-    # print(f"{original_pdf_file} --> {jacow_pdf_file}")
-
-    await pdf_linearize_qpdf(str(original_pdf_file), str(jacow_pdf_file), None, None)
+    # await pdf_linearize_qpdf(str(original_pdf_file), str(jacow_pdf_file), None, None)
