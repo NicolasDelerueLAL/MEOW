@@ -77,11 +77,12 @@ async def extract_proceedings_posters(
         ):
             revision_data = contribution_data.posters.latest_revision
             for file_data in revision_data.files:
+
                 # logger.debug(f"""{file_data.uuid} -
                 #             {file_data.filename} -
                 #             {file_data.file_type}""")
 
-                if file_data.file_type == FileData.FileType.slides:
+                if file_data.file_type == FileData.FileType.poster:
                     posters.append(file_data)
 
     return posters
