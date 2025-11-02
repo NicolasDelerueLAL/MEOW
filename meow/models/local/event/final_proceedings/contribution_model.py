@@ -384,10 +384,10 @@ class ContributionData:
             "authors_groups": [g.as_dict() for g in self.authors_groups],
             "has_paper": self.has_paper(),
             "has_slides": self.has_slides(),
-            "has_poster": self.has_poster(),
+            "has_posters": self.has_poster(),
             "paper_name": self.paper_name(),
             "slides_name": self.slides_name(),
-            "poster_name": self.poster_name(),
+            "posters_name": self.posters_name(),
             "duplicate_of": self.duplicate_of.as_dict() if self.duplicate_of else None,
         }
 
@@ -438,7 +438,7 @@ class ContributionData:
                     return file.filename
         return None
 
-    def has_poster(self) -> bool:
+    def has_posters(self) -> bool:
         if (
             self.posters
             and self.posters.latest_revision
@@ -449,7 +449,7 @@ class ContributionData:
                     return True
         return False
 
-    def poster_name(self) -> str | None:
+    def posters_name(self) -> str | None:
         if (
             self.posters
             and self.posters.latest_revision
