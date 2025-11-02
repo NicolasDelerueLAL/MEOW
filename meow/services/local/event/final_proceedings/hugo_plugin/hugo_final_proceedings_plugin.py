@@ -264,7 +264,10 @@ class HugoProceedingsPlugin(AbstractFinalProceedingsPlugin):
 
                     await Path(base_path, f"{code}.html").write_text(
                         await self.template.render_contribution_partial(
-                            contribution, self.config.include_event_slides, is_published
+                            contribution,
+                            self.config.include_event_slides,
+                            self.config.include_event_posters,
+                            is_published,
                         )
                     )
 
