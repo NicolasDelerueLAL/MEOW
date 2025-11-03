@@ -149,7 +149,7 @@ def get_header_data(contribution: ContributionData) -> dict[str, str] | None:
         dict(
             series=unidecode(contribution.doi_data.series),
             venue=unidecode(
-                f"{contribution.doi_data.conference_code},{contribution.doi_data.venue}"
+                f"{contribution.doi_data.conference_code}, {contribution.doi_data.venue}"
             ),
             isbn=contribution.doi_data.isbn,
             issn=contribution.doi_data.issn,
