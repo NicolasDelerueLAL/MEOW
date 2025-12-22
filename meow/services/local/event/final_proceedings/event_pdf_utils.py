@@ -410,23 +410,6 @@ def _draw_frame_anyio(
     try:
         doc = Document(filename=input)
 
-        # scrub(doc,
-        #       attached_files=False,
-        #       clean_pages=False,
-        #       embedded_files=False,
-        #       hidden_text=True,
-        #       javascript=True,
-        #       metadata=True,
-        #       redactions=False,
-        #       redact_images=0,
-        #       remove_links=False,
-        #       reset_fields=False,
-        #       reset_responses=True,
-        #       thumbnails=False,
-        #       xml_metadata=True)
-
-        # set_page_labels(doc, [])
-
         doc.del_xml_metadata()
 
         if xml_metadata:

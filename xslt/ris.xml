@@ -72,7 +72,7 @@ KW - </xsl:text><xsl:comment>KEYWORDS</xsl:comment>
 DA - </xsl:text><xsl:value-of select="substring($dateString, 1, 4)"/><xsl:text>/</xsl:text><xsl:value-of select="substring($dateString, 6, 2)"/>
 <xsl:text>
 PY - </xsl:text><xsl:value-of select="substring($dateString, 1, 4)"/>
-<xsl:if test="conference/issn != ''"><xsl:text>
+<xsl:if test="conference/issn != '' and conference/issn != '0000-0000'"><xsl:text>
 SN - </xsl:text><xsl:value-of select="conference/issn"/></xsl:if>
 <xsl:if test="contribution/doi != ''"><xsl:text>
 DO - </xsl:text><xsl:value-of select="contribution/doi"/></xsl:if>

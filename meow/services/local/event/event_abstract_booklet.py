@@ -20,7 +20,9 @@ logger = lg.getLogger(__name__)
 
 
 async def event_abstract_booklet(
-    event: dict, cookies: dict, settings: dict
+    event: dict,
+    cookies: dict,
+    settings: dict,
 ) -> AsyncGenerator:
     """ """
 

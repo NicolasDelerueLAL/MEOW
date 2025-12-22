@@ -41,7 +41,11 @@ from meow.utils.logger import event_id_var
 logger = lg.getLogger(__name__)
 
 
-async def event_pdf_check(event: dict, cookies: dict, settings: dict) -> AsyncGenerator:
+async def event_pdf_check(
+    event: dict,
+    cookies: dict,
+    settings: dict,
+) -> AsyncGenerator:
     """ """
 
     token: Token = None
@@ -103,7 +107,10 @@ def callback(c: ContributionData) -> bool:
 
 
 async def _event_pdf_check(
-    event: dict, cookies: dict, settings: dict, lock: RedisLock
+    event: dict,
+    cookies: dict,
+    settings: dict,
+    lock: RedisLock,
 ) -> AsyncGenerator:
     """ """
 

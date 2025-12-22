@@ -13,7 +13,9 @@
         <end-date>{{ end_date }}</end-date>
         <year>{{ year }}</year>
         <month>{{ month }}</month>
+        {% if issn != '0000-0000' %}
         <issn>{{ issn }}</issn>
+        {% endif %}
         <isbn>{{ isbn }}</isbn>
     </conference>
     <contribution>

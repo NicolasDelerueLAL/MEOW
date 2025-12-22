@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     {% block head %}
-    <title>{% block title %}{% endblock %} - My Webpage</title>
+    <title>{% block title %}{% endblock %}</title>
     {% endblock %}
 
     {% block styles %}
@@ -19,9 +19,7 @@
     {% block content %}{% endblock %}
     </div>
     <div id="footer">
-        {% block footer %}
-        &copy; Copyright 2022.
-        {% endblock %}
+        {% block footer %}{% endblock %}
     </div>
 </body>
 </html>

@@ -24,8 +24,12 @@
                 </titles>
                 <publisher><xsl:value-of select="publisher"/></publisher>
                 <pub-location><xsl:value-of select="publisher-venue"/></pub-location>
-                <issn><xsl:value-of select="conference/issn"/></issn>
-                <isbn><xsl:value-of select="conference/isbn"/></isbn>
+                <xsl:if test="conference/issn != '' and conference/issn != '0000-0000'">
+                    <issn><xsl:value-of select="conference/issn"/></issn>
+                </xsl:if>
+                <xsl:if test="conference/isbn != ''">
+                    <isbn><xsl:value-of select="conference/isbn"/></isbn>
+                </xsl:if>
                 <xsl:if test="contribution/doi != ''">
                     <electronic-resource-num><xsl:value-of select="contribution/doi"/></electronic-resource-num>
                 </xsl:if>

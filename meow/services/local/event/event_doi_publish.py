@@ -27,7 +27,9 @@ logger = lg.getLogger(__name__)
 
 
 async def event_doi_publish(
-    event: dict, cookies: dict, settings: dict
+    event: dict,
+    cookies: dict,
+    settings: dict,
 ) -> AsyncGenerator:
     """ """
 
@@ -92,7 +94,10 @@ async def extend_lock(lock: RedisLock) -> RedisLock:
 
 
 async def _event_doi_publish(
-    event: dict, cookies: dict, settings: dict, lock: RedisLock
+    event: dict,
+    cookies: dict,
+    settings: dict,
+    lock: RedisLock,
 ) -> AsyncGenerator:
     """ """
 

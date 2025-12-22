@@ -1,10 +1,6 @@
-import json
-import anyio
 import orjson
 
 import logging as lg
-
-from datetime import datetime
 
 from typing import AsyncGenerator
 from asyncio import CancelledError
@@ -34,7 +30,9 @@ logger = lg.getLogger(__name__)
 
 
 async def event_api_refs(
-    event_id: str, event_url: str, indico_token: str
+    event_id: str,
+    event_url: str,
+    indico_token: str,
 ) -> AsyncGenerator:
     """ """
 
@@ -84,6 +82,7 @@ async def event_api_refs(
         config = ProceedingsConfig(
             strict_pdf_check=False,
             include_event_slides=False,
+            include_event_posters=False,
             generate_doi_payload=False,
             generate_external_doi_url=False,
             generate_hep_payload=False,
@@ -134,7 +133,10 @@ async def event_api_refs(
 
 
 async def _event_api_refs(
-    event_id: str, event_url: str, indico_token: str, config: ProceedingsConfig
+    event_id: str,
+    event_url: str,
+    indico_token: str,
+    config: ProceedingsConfig,
 ) -> AsyncGenerator:
     """ """
 

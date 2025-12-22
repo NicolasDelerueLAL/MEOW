@@ -254,20 +254,21 @@ async def contribution_data_factory(
 
     reference_doi: str = (
         generate_doi_name(
-            context=settings.get("doi_context", "10.18429"),
-            organization=settings.get("doi_organization", "JACoW"),
-            conference=settings.get("doi_conference", "CONF-YY"),
+            context=settings.get("doi_context", ""),
+            organization=settings.get("doi_organization", ""),
+            conference=settings.get("doi_conference", ""),
             contribution=contribution.code,
         )
         if callable(contribution) > 0
         else ""
     )
 
-    isbn: str = settings.get("isbn", "978-3-95450-227-1")
-    issn: str = settings.get("issn", "2673-5490")
+    isbn: str = settings.get("isbn", "")
+    issn: str = settings.get("issn", "0000-0000")
 
     booktitle_short: str = settings.get("booktitle_short", "")
     booktitle_long: str = settings.get("booktitle_long", "")
+
     series: str = settings.get("series", "")
     series_number: str = settings.get("series_number", "")
 

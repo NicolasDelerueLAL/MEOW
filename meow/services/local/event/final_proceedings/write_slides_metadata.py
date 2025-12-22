@@ -3,7 +3,9 @@ from typing import Callable
 
 from anyio import Path, create_task_group
 
-from meow.models.local.event.final_proceedings.contribution_model import FileData
+from meow.models.local.event.final_proceedings.contribution_model import (
+    FileData,
+)
 from meow.models.local.event.final_proceedings.proceedings_data_utils import (
     extract_proceedings_slides,
 )
@@ -21,7 +23,10 @@ logger = lg.getLogger(__name__)
 
 
 async def write_slides_metadata(
-    proceedings_data: ProceedingsData, cookies: dict, settings: dict, callback: Callable
+    proceedings_data: ProceedingsData,
+    cookies: dict,
+    settings: dict,
+    callback: Callable,
 ) -> ProceedingsData:
     """ """
 
@@ -48,6 +53,7 @@ async def write_slides_metadata(
         for current_slide in slides_data:
             tg.start_soon(
                 write_metadata_task,
+                proceedings_data,
                 current_slide,
                 sessions_dict,
                 settings,
@@ -69,12 +75,16 @@ async def write_slides_metadata(
 
 
 async def write_metadata_task(
-    current_slide: FileData, sessions, settings, pdf_cache_dir
+    proceedings_data: ProceedingsData,
+    current_file_data: FileData,
+    sessions: dict,
+    settings: dict,
+    pdf_cache_dir: str,
 ):
-    original_pdf_name = f"{current_slide.filename}"
+    original_pdf_name = f"{current_file_data.filename}"
     original_pdf_file = Path(pdf_cache_dir, original_pdf_name)
 
-    jacow_pdf_name = f"{current_slide.filename}_jacow"
+    jacow_pdf_name = f"{current_file_data.filename}_jacow"
     jacow_pdf_file = Path(pdf_cache_dir, jacow_pdf_name)
 
     await jacow_pdf_file.unlink(missing_ok=True)
