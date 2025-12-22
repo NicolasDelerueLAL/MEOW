@@ -4,13 +4,13 @@
     <div class="event-head">
 
         <div class="event-name">
-            <div>{% raw %}{{.Site.Params.name}}{% endraw %}</div>
+            <div>{{ event.name }}</div>
         </div>
 
         <div class="event-title">
             <div>
                 <span>Proceedings of the</span><br>
-                <big>{% raw %}{{.Site.Params.title}}{% endraw %}</big>
+                <big>{{ event.title }}</big>
             </div>
         </div>
 
@@ -49,17 +49,13 @@
             <div class="event-volumes">
                 <ul>
                     <li>
-                        <a href="./pdf/{{ event.path }}_proceedings_volume.pdf"><b>{% raw %}
-                                {{.Site.Params.name}}
-                                {% endraw %} Proceedings Volume</b></a>
+                        <a href="./pdf/{{ event.path }}_proceedings_volume.pdf"><b>{{event.name}} Proceedings Volume</b></a>
                         ({{ volume_size | filesizeformat }})
                         <div><i>The complete volume of papers</i></div>
                     </li>
 
                     <li>
-                        <a href="./pdf/{{ event.path }}_proceedings_brief.pdf"><b>{% raw %}
-                                {{.Site.Params.name}}
-                                {% endraw %} Proceedings at a glance</b></a>
+                        <a href="./pdf/{{ event.path }}_proceedings_brief.pdf"><b>{{event.name}} Proceedings at a glance</b></a>
                         ({{ brief_size | filesizeformat }})
                         <div><i>First page only of all papers with hyperlinks to complete versions</i></div>
                     </li>
@@ -82,7 +78,7 @@
                     {% for attachment in attachments | sort(attribute='index') %}
                     <li>
                         <a href="./pdf/{{ attachment.filename }}"><b>{{ attachment.title }}</b></a>
-                        ({{ attachment.size | filesizeformat }})
+                        ({{ attachment.size | filesizeformat}})
                         {% if attachment.description: %}
                         <div><i>{{ attachment.description }}</i></div>
                         {% endif %}
@@ -103,11 +99,16 @@
 
         <div class="event-doi">
             <p>
-            <div>DATE: {% raw %}{{.Site.Params.date}}{% endraw %}</div>
-            <div>ISBN: {% raw %}{{.Site.Params.isbn}}{% endraw %}</div>
-            <div>ISSN: {% raw %}{{.Site.Params.issn}}{% endraw %}</div>
-            <div>DOI: {% raw %}<a target="_blank" href="{{.Site.Params.doi_url}}">{{.Site.Params.doi_label}}</a>{%
-                endraw %}</div>
+                <div>DATE: {{ event.date }}</div>
+                <div>ISBN: {{ event.isbn }}</div>
+                {% if event.issn != '0000-0000' %}
+                <div>ISSN: {{ event.issn }}</div>
+                {% endif %}
+                <div>DOI: 
+                    <a target="_blank" href="{{ event.doi_url }}">
+                        {{ event.doi_label }}
+                    </a>
+                </div>
             </p>
         </div>
 
@@ -118,10 +119,10 @@
     </div>
 
     <div class="event-copy">
-        Copyright &copy; {% raw %}{{.Site.Params.copyright_year}}{% endraw %} by
+        Copyright &copy; {{ event.copyright_year }} by
         <a href="https://www.jacow.org/" target="_blank">JACoW</a>
-        — {% raw %}<a href="{{.Site.Params.site_license_url}}" target="_blank">
-          {{.Site.Params.site_license_text}}</a>{% endraw %}
+        — <a href="{{ event.site_license_text }}" target="_blank">
+          {{ event.site_license_text }}</a>
         — <a href="https://www.jacow.org/About/PublishingPoliciesEthics">Publishing Policies &amp; Ethics</a>
     </div>
 

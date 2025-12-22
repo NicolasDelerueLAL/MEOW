@@ -43,7 +43,8 @@ async def extract_proceedings_papers(
 
 
 async def extract_proceedings_slides(
-    proceedings_data: ProceedingsData, callback: Callable
+    proceedings_data: ProceedingsData,
+    callback: Callable,
 ) -> list[FileData]:
     slides: list[FileData] = []
 
@@ -66,7 +67,8 @@ async def extract_proceedings_slides(
 
 
 async def extract_proceedings_posters(
-    proceedings_data: ProceedingsData, callback: Callable
+    proceedings_data: ProceedingsData,
+    callback: Callable,
 ) -> list[FileData]:
     posters: list[FileData] = []
 

@@ -117,7 +117,10 @@ logger = lg.getLogger(__name__)
 
 
 async def event_proceedings(
-    event: dict, cookies: dict, settings: dict, config: ProceedingsConfig
+    event: dict,
+    cookies: dict,
+    settings: dict,
+    config: ProceedingsConfig,
 ) -> AsyncGenerator:
     """event_proceedings"""
 

@@ -179,7 +179,7 @@ class EventData:
         }
 
     def as_ref(self) -> dict:
-        return {
+        attributes = {
             "eventId": self.id,
             "code": self.name,
             "name": self.title,
@@ -189,8 +189,6 @@ class EventData:
             "date": self.date,
             "series": self.series,
             "seriesNumber": self.series_number,
-            "issn": self.issn,
-            "isbn": self.isbn,
             "copyrightYear": self.copyright_year,
             "doiCode": self.doi_code,
             # "useDoi": True,
@@ -198,3 +196,11 @@ class EventData:
             # "isPublished": False,
             "timestamp": str(datetime.now()),
         }
+
+        if self.isbn != "":
+            attributes["isbn"] = self.isbn
+
+        if self.issn != "0000-0000":
+            attributes["issn"] = self.issn
+
+        return attributes

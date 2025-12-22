@@ -74,10 +74,12 @@
             <th>Online ISBN</th>
             <td>{{ contribution.isbn }}</td>
         </tr>
+        {% if contribution.issn != '0000-0000' %}
         <tr class="doi-issn">
             <th>Online ISSN</th>
             <td>{{ contribution.issn }}</td>
         </tr>
+        {% endif %}
         <tr class="doi-received">
             <th>Received</th>
             <td>{{ contribution.reception_date }}</td>

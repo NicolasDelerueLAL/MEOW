@@ -103,19 +103,20 @@ def annot_toc_header(page: Page, data: dict):
     )
 
     # middle
-    page.add_freetext_annot(
-        rect=Rect(
-            PAGE_HORIZONTAL_MARGIN,
-            PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
-            PAGE_HORIZONTAL_MARGIN + rect_width,
-            PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
-        ),
-        align=TEXT_ALIGN_CENTER,
-        text=f"ISSN: {data.get('issn', 'issn')}",
-        fontname=ANNOTS_FONT_NAME,
-        fontsize=ANNOTS_FONT_SIZE,
-        text_color=ANNOTS_TEXT_COLOR,
-    )
+    if data.get('issn', '0000-0000') != '0000-0000':
+        page.add_freetext_annot(
+            rect=Rect(
+                PAGE_HORIZONTAL_MARGIN,
+                PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
+                PAGE_HORIZONTAL_MARGIN + rect_width,
+                PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
+            ),
+            align=TEXT_ALIGN_CENTER,
+            text=f"ISSN: {data.get('issn', '0000-0000')}",
+            fontname=ANNOTS_FONT_NAME,
+            fontsize=ANNOTS_FONT_SIZE,
+            text_color=ANNOTS_TEXT_COLOR,
+        )
 
     # right
     page.add_freetext_annot(
@@ -240,19 +241,20 @@ def annot_page_header(page: Page, data: dict):
     )
 
     # middle
-    page.add_freetext_annot(
-        rect=Rect(
-            PAGE_HORIZONTAL_MARGIN,
-            PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
-            PAGE_HORIZONTAL_MARGIN + rect_width,
-            PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
-        ),
-        align=TEXT_ALIGN_CENTER,
-        text=f"ISSN: {data.get('issn', 'issn')}",
-        fontname=ANNOTS_FONT_NAME,
-        fontsize=ANNOTS_FONT_SIZE,
-        text_color=ANNOTS_TEXT_COLOR,
-    )
+    if data.get('issn', '0000-0000') != '0000-0000':
+        page.add_freetext_annot(
+            rect=Rect(
+                PAGE_HORIZONTAL_MARGIN,
+                PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
+                PAGE_HORIZONTAL_MARGIN + rect_width,
+                PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
+            ),
+            align=TEXT_ALIGN_CENTER,
+            text=f"ISSN: {data.get('issn', '0000-0000')}",
+            fontname=ANNOTS_FONT_NAME,
+            fontsize=ANNOTS_FONT_SIZE,
+            text_color=ANNOTS_TEXT_COLOR,
+        )
 
     # right
     page.add_freetext_annot(

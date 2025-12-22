@@ -103,20 +103,21 @@ def write_toc_header(page: Page, data: dict):
     )
 
     # middle
-    insert_textbox(
-        page=page,
-        rect=Rect(
-            PAGE_HORIZONTAL_MARGIN,
-            PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
-            PAGE_HORIZONTAL_MARGIN + rect_width,
-            PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
-        ),
-        align=TEXT_ALIGN_CENTER,
-        buffer=f"ISSN: {data.get('issn', 'issn')}",
-        fontname=TEXTBOX_FONT_NAME,
-        fontsize=TEXTBOX_FONT_SIZE,
-        color=TEXTBOX_TEXT_COLOR,
-    )
+    if data.get('issn', '0000-0000') != '0000-0000':
+        insert_textbox(
+            page=page,
+            rect=Rect(
+                PAGE_HORIZONTAL_MARGIN,
+                PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
+                PAGE_HORIZONTAL_MARGIN + rect_width,
+                PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
+            ),
+            align=TEXT_ALIGN_CENTER,
+            buffer=f"ISSN: {data.get('issn', '0000-0000')}",
+            fontname=TEXTBOX_FONT_NAME,
+            fontsize=TEXTBOX_FONT_SIZE,
+            color=TEXTBOX_TEXT_COLOR,
+        )
 
     # right
     insert_textbox(
@@ -248,20 +249,21 @@ def write_page_header(page: Page, data: dict):
     )
 
     # middle
-    insert_textbox(
-        page=page,
-        rect=Rect(
-            PAGE_HORIZONTAL_MARGIN,
-            PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
-            PAGE_HORIZONTAL_MARGIN + rect_width,
-            PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
-        ),
-        align=TEXT_ALIGN_CENTER,
-        buffer=f"ISSN: {data.get('issn', 'issn')}",
-        fontname=TEXTBOX_FONT_NAME,
-        fontsize=TEXTBOX_FONT_SIZE,
-        color=TEXTBOX_TEXT_COLOR,
-    )
+    if data.get('issn', '0000-0000') != '0000-0000':
+        insert_textbox(
+            page=page,
+            rect=Rect(
+                PAGE_HORIZONTAL_MARGIN,
+                PAGE_VERTICAL_MARGIN + ANNOTATION_HEIGHT + LINE_SPACING,
+                PAGE_HORIZONTAL_MARGIN + rect_width,
+                PAGE_VERTICAL_MARGIN + 2 * ANNOTATION_HEIGHT + LINE_SPACING,
+            ),
+            align=TEXT_ALIGN_CENTER,
+            buffer=f"ISSN: {data.get('issn', '0000-0000')}",
+            fontname=TEXTBOX_FONT_NAME,
+            fontsize=TEXTBOX_FONT_SIZE,
+            color=TEXTBOX_TEXT_COLOR,
+        )
 
     # right
     insert_textbox(

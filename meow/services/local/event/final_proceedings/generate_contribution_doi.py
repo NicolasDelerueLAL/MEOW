@@ -56,11 +56,15 @@ async def generate_dois(
     logger.info("event_final_proceedings - generate_contribution_doi")
 
     proceedings_data.conference_doi = await generate_conference_doi_task(
-        proceedings_data, settings, config
+        proceedings_data,
+        settings,
+        config,
     )
 
     proceedings_data.conference_hep = await generate_conference_hep_task(
-        proceedings_data, settings, config
+        proceedings_data,
+        settings,
+        config,
     )
 
     contributions = [
@@ -193,7 +197,9 @@ async def generate_conference_hep_task(
 
 
 async def generate_conference_doi_task(
-    proceedings_data: ProceedingsData, settings: dict, config: ProceedingsConfig
+    proceedings_data: ProceedingsData,
+    settings: dict,
+    config: ProceedingsConfig,
 ):
     """ """
 
@@ -229,11 +235,36 @@ async def generate_conference_doi_task(
         event_person_factory(person) for person in editors_dict_list
     ]
 
+    relatedIdentifiers = []
+
+    if settings.get("isbn", "") != "":
+        relatedIdentifiers.append(
+            {
+                "relatedIdentifier": settings.get("isbn", ""),
+                "relatedIdentifierType": "ISBN",
+                "relationType": "IsPartOf",
+            }
+        )
+
+    if settings.get("issn", "0000-0000") != "0000-0000":
+        relatedIdentifiers.append(
+            {
+                "relatedIdentifier": settings.get("issn", "0000-0000"),
+                "relatedIdentifierType": "ISSN",
+                "relationType": "IsPartOf",
+            }
+        )
+
     conference_doi = {
         "id": doi_identifier,
         "type": "dois",
         "doi": doi_identifier,
-        "identifiers": [{"identifier": doi_url, "identifierType": "DOI"}],
+        "identifiers": [
+            {
+                "identifier": doi_url,
+                "identifierType": "DOI",
+            }
+        ],
         "creators": [
             {
                 "name": f"{editor.last},{editor.first}",
@@ -291,20 +322,9 @@ async def generate_conference_doi_task(
             "citeproc": "article",
             "schemeOrg": "Periodical",
         },
-        "relatedIdentifiers": [
-            {
-                "relatedIdentifier": settings.get("isbn", ""),
-                "relatedIdentifierType": "ISBN",
-                "relationType": "IsPartOf",
-            },
-            {
-                "relatedIdentifier": settings.get("issn", ""),
-                "relatedIdentifierType": "ISSN",
-                "relationType": "IsPartOf",
-            },
-        ],
+        "relatedIdentifiers": relatedIdentifiers,
         "sizes": [
-            f"{paper_size_mb(proceedings_data.proceedings_volume_size)} MB",
+            # f"{paper_size_mb(proceedings_data.proceedings_volume_size)} MB",
             f"{proceedings_data.total_pages} pages",
         ],
         "formats": ["PDF"],
@@ -412,8 +432,8 @@ async def build_contribution_doi(
         contribution=contribution.code,
     )
 
-    event_isbn: str = settings.get("isbn", "CONF-ISBN")
-    event_issn: str = settings.get("issn", "CONF-ISSN")
+    event_isbn: str = settings.get("isbn", "")
+    event_issn: str = settings.get("issn", "0000-0000")
 
     primary_authors = [
         AuthorDOI(

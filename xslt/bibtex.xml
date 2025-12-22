@@ -79,7 +79,7 @@
     month = {</xsl:text><xsl:value-of select="substring($dateString, 6, 2)"/><xsl:text>},</xsl:text>
 <xsl:text>
     year = {</xsl:text><xsl:value-of select="substring($dateString, 1, 4)"/><xsl:text>},</xsl:text>
-<xsl:if test="conference/issn != ''"><xsl:text>
+<xsl:if test="conference/issn != '' and conference/issn != '0000-0000'"><xsl:text>
     issn = {</xsl:text><xsl:value-of select="conference/issn"/><xsl:text>},</xsl:text></xsl:if>
 <xsl:if test="conference/isbn != ''"><xsl:text>
     isbn = {</xsl:text><xsl:value-of select="conference/isbn"/><xsl:text>},</xsl:text></xsl:if>
