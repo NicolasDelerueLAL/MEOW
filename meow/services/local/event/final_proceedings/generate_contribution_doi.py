@@ -267,7 +267,7 @@ async def generate_conference_doi_task(
         ],
         "creators": [
             {
-                "name": f"{editor.last},{editor.first}",
+                "name": f"{editor.last}, {editor.first}",
                 "nameType": "Personal",
                 "affiliation": [
                     {"name": affiliation} for affiliation in editor.affiliations
@@ -289,7 +289,7 @@ async def generate_conference_doi_task(
         "subjects": [{"subject": "Accelerator Physics", "lang": "en-us"}],
         "contributors": [
             {
-                "name": f"{editor.last},{editor.first}",
+                "name": f"{editor.last}, {editor.first}",
                 "nameType": "Personal",
                 "affiliation": [
                     {"name": affiliation} for affiliation in editor.affiliations
