@@ -17,6 +17,16 @@ from meow.models.local.event.final_proceedings.track_model import TrackData
 logger = lg.getLogger(__name__)
 
 
+def _is_better_name(candidate: str, existing: str) -> bool:
+    """Prefer mixed-case names over all-uppercase or all-lowercase."""
+    def _score(name: str) -> int:
+        stripped = name.replace(" ", "").replace("-", "").replace("'", "")
+        if not stripped:
+            return 0
+        return 0 if (stripped == stripped.upper() or stripped == stripped.lower()) else 1
+    return _score(candidate) > _score(existing)
+
+
 async def generate_contributions_groups(
     proceedings_data: ProceedingsData, cookies: dict, settings: dict
 ) -> ProceedingsData:
@@ -145,11 +155,12 @@ async def contributions_group_by_author(
                 if not author:
                     continue
                 if author.id in proceedings_authors:
-                    # update author affiliations
-                    proceedings_authors[author.id].affiliations = (
-                        proceedings_authors[author.id].affiliations
-                        | author.affiliations
-                    )
+                    existing = proceedings_authors[author.id]
+                    existing.affiliations = existing.affiliations | author.affiliations
+                    if _is_better_name(author.first, existing.first):
+                        existing.first = author.first
+                    if _is_better_name(author.last, existing.last):
+                        existing.last = author.last
                 else:
                     proceedings_authors[author.id] = author
 

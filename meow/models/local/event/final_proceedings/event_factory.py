@@ -16,6 +16,14 @@ from meow.utils.datetime import datedict_to_tz_datetime, datetime_localize
 logger = lg.getLogger(__name__)
 
 
+def _normalize_name(name: str) -> str:
+    """Apply title-case only to all-upper or all-lower names; leave mixed-case unchanged."""
+    stripped = name.replace(" ", "").replace("-", "").replace("'", "")
+    if stripped and (stripped == stripped.upper() or stripped == stripped.lower()):
+        return name.title()
+    return name
+
+
 def material_data_factory(material: Any) -> MaterialData:
     material_data = MaterialData(
         file_type=material.get("file_type"),
@@ -122,20 +130,18 @@ def event_keyword_factory(keyword: str) -> KeywordData:
 def _generate_affiliations(
     affiliation: str, multiple_affiliations: list[str]
 ) -> set[str]:
-    affiliations = []
+    if multiple_affiliations:
+        return set(a.strip() for a in multiple_affiliations if a.strip())
 
     if affiliation:
-        affiliations += [a.strip() for a in affiliation.split(";") if a.strip()]
+        return set(a.strip() for a in affiliation.split(";") if a.strip())
 
-    if multiple_affiliations:
-        affiliations += [a.strip() for a in multiple_affiliations if a.strip()]
-
-    return set(affiliations)
+    return set()
 
 
 def event_person_factory(person: dict) -> PersonData:
-    first = person.get("first_name").strip()
-    last = person.get("last_name").strip()
+    first = _normalize_name(person.get("first_name").strip())
+    last = _normalize_name(person.get("last_name").strip())
     email = person.get("email").strip() if person.get("email") else ""
     affiliation = person.get("affiliation").strip()
     multiple_affiliations = person.get("multiple_affiliations", [])

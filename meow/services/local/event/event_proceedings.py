@@ -42,6 +42,9 @@ from meow.services.local.event.common.validate_proceedings_data import (
 from meow.services.local.event.final_proceedings.concat_contribution_papers import (
     concat_contribution_papers,
 )
+from meow.services.local.event.final_proceedings.optimize_proceedings_pdfs import (
+    optimize_proceedings_pdfs,
+)
 from meow.services.local.event.final_proceedings.copy_contribution_papers import (
     copy_contribution_papers,
 )
@@ -109,6 +112,9 @@ from meow.app.errors.service_error import (
 )
 from meow.services.local.event.final_proceedings.build_refs_payloads import (
     build_refs_payloads,
+)
+from meow.services.local.event.final_proceedings.check_duplicate_authors import (
+    check_duplicate_authors,
 )
 
 from meow.utils.logger import event_id_var
@@ -299,6 +305,29 @@ async def _event_proceedings(
         cookies,
         settings,
     )
+
+    """ """
+
+    await extend_lock(lock)
+
+    # yield dict(
+    #     type="progress",
+    #     value=dict(
+    #         phase="check_duplicate_authors",
+    #         text="Check duplicate authors",
+    #     ),
+    # )
+
+    duplicate_warnings = await check_duplicate_authors(proceedings)
+
+    for warning in duplicate_warnings:
+        yield dict(
+            type="log",
+            value=ClientLog(
+                severity=ClientLogSeverity.WARNING,
+                message=warning,
+            ),
+        )
 
     """ """
 
@@ -655,6 +684,35 @@ async def _event_proceedings(
         config,
         filter_published_contributions,
     )
+
+    """ """
+
+    await extend_lock(lock)
+
+    yield dict(
+        type="progress",
+        value=dict(
+            phase="optimize_proceedings_pdfs",
+            text="Optimize Proceedings PDFs",
+        ),
+    )
+
+    [proceedings, opt_logs] = await optimize_proceedings_pdfs(
+        proceedings,
+        cookies,
+        settings,
+        config,
+        filter_published_contributions,
+    )
+
+    for msg in opt_logs:
+        yield dict(
+            type="log",
+            value=ClientLog(
+                severity=ClientLogSeverity.INFO,
+                message=msg,
+            ),
+        )
 
     """ """
 

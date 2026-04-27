@@ -713,6 +713,16 @@ async def pdf_clean_mutool(read_path: str, write_path: str) -> int:
     return 0 if res and res.returncode == 0 else 1
 
 
+async def pdf_optimize_pymupdf(read_path: str, write_path: str) -> int:
+    cmd = [get_python_cmd(), "-m", "fitz", "clean", "-garbage", "4", read_path, write_path]
+
+    logger.info(" ".join(cmd))
+
+    res = await run_cmd(cmd)
+
+    return 0 if res and res.returncode == 0 else 1
+
+
 async def concat_pdf(write_path: str, files: list[str]) -> int:
     """https://pymupdf.readthedocs.io/en/latest/tutorial.html
     #joining-and-splitting-pdf-documents"""
