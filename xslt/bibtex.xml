@@ -6,36 +6,19 @@
 <xsl:when test="contribution/status = 'in_proceedings'">@inproceedings</xsl:when>
 <xsl:when test="contribution/status = 'conference'">@conference</xsl:when>
 <xsl:when test="contribution/status = 'unpublished'">@unpublished</xsl:when>
+<xsl:when test="contribution/status = 'to_be_published'">@unpublished</xsl:when>
 </xsl:choose>
 <xsl:text>{</xsl:text>
 <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
 <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-<xsl:value-of select="translate(contribution/authors-list/author/last-name, $uppercase, $lowercase)"/><xsl:text>:</xsl:text><xsl:value-of select="translate(conference/code, $uppercase, $lowercase)"/><xsl:text>-</xsl:text><xsl:value-of select="translate(contribution/paper-code, $uppercase, $lowercase)"/><xsl:text>,
+<xsl:value-of select="translate(translate(contribution/authors-list/author/last-name, ' ', '-'), $uppercase, $lowercase)"/><xsl:text>:</xsl:text><xsl:value-of select="translate(conference/code, $uppercase, $lowercase)"/><xsl:text>-</xsl:text><xsl:value-of select="translate(contribution/paper-code, $uppercase, $lowercase)"/><xsl:text>,
     author = {</xsl:text>
-<xsl:variable name="set" select="contribution/authors-list/author"/>
-<xsl:variable name="count" select="count($set)"/>
-<xsl:choose>
-<xsl:when test="$count > 3">
-<xsl:value-of select="substring(contribution/authors-list/author/first-name, 1, 1)"/>
-<xsl:text>. </xsl:text>
-<xsl:value-of select="contribution/authors-list/author/last-name"/>
-<xsl:text> and others</xsl:text>
-</xsl:when>
-<xsl:otherwise>
-<xsl:for-each select="$set">
-<xsl:variable name="index" select="position()"/>
-<xsl:if test="$index > 1">
-<xsl:choose>
-<xsl:when test="$index = $count"><xsl:text> and </xsl:text></xsl:when>
-<xsl:otherwise><xsl:text>, </xsl:text></xsl:otherwise>
-</xsl:choose>
-</xsl:if>
-<xsl:value-of select="substring(first-name, 1, 1)"></xsl:value-of>
+<xsl:for-each select="contribution/authors-list/author">
+<xsl:if test="position() > 1"><xsl:text> and </xsl:text></xsl:if>
+<xsl:value-of select="substring(first-name, 1, 1)"/>
 <xsl:text>. </xsl:text>
 <xsl:value-of select="last-name"/>
 </xsl:for-each>
-</xsl:otherwise>
-</xsl:choose>
 <xsl:text>},
     title = {</xsl:text><xsl:value-of select="contribution/title"/><xsl:text>},</xsl:text>
 <xsl:if test="conference/booktitle-short != ''"><xsl:text>
@@ -100,6 +83,7 @@
 <xsl:text>, </xsl:text>
 <xsl:if test="contribution/status = 'conference'"><xsl:text>this conference</xsl:text></xsl:if>
 <xsl:if test="contribution/status = 'unpublished'"><xsl:text>unpublished</xsl:text></xsl:if>
+<xsl:if test="contribution/status = 'to_be_published'"><xsl:text>to be published</xsl:text></xsl:if>
 <xsl:text>},</xsl:text>
 </xsl:if>
 <xsl:text>

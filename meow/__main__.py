@@ -896,6 +896,61 @@ def doc_toc_links(args) -> None:
     del doc
 
 
+def _build_xmp_xml(d: dict) -> str:
+    from xml.sax.saxutils import escape
+
+    lines = [
+        '<?xpacket begin="\xef\xbb\xbf" id="W5M0MpCehiHzreSzNTczkc9d"?>',
+        '<x:xmpmeta xmlns:x="adobe:ns:meta/">',
+        '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">',
+        '<rdf:Description rdf:about=""',
+        '  xmlns:dc="http://purl.org/dc/elements/1.1/"',
+        '  xmlns:xmp="http://ns.adobe.com/xap/1.0/"',
+        '  xmlns:pdf="http://ns.adobe.com/pdf/1.3/">',
+    ]
+
+    for key, val in d.items():
+        if isinstance(val, list):
+            lines.append(f"<{key}><rdf:Bag>")
+            for item in val:
+                lines.append(f"<rdf:li>{escape(str(item))}</rdf:li>")
+            lines.append(f"</rdf:Bag></{key}>")
+        else:
+            lines.append(f"<{key}>{escape(str(val))}</{key}>")
+
+    lines += [
+        "</rdf:Description>",
+        "</rdf:RDF>",
+        "</x:xmpmeta>",
+        '<?xpacket end="w"?>',
+    ]
+
+    return "\n".join(lines)
+
+
+def doc_optimize_pdf(args) -> None:
+    _DOCINFO_KEY_MAP = {
+        "/Author": "author", "/Producer": "producer", "/Creator": "creator",
+        "/Title": "title", "/Subject": "subject", "/Keywords": "keywords",
+        "/CreationDate": "creationDate", "/ModDate": "modDate",
+    }
+
+    doc = Document(filename=args.input)
+
+    if args.docinfo:
+        raw = json.loads(args.docinfo)
+        meta = {_DOCINFO_KEY_MAP.get(k, k.lstrip("/").lower()): v for k, v in raw.items() if v}
+        set_metadata(doc, meta)
+
+    doc.del_xml_metadata()
+    if args.xmp:
+        doc.set_xml_metadata(_build_xmp_xml(json.loads(args.xmp)))
+
+    doc.save(args.output, garbage=4, deflate=1, linear=True)
+    doc.close()
+    del doc
+
+
 def doc_metadata(args) -> None:
     doc = Document(filename=args.input)
 
@@ -1057,6 +1112,20 @@ def main():
     ps_frame.add_argument("-metadata", required=False, help="pdf metadata")
 
     ps_frame.set_defaults(func=doc_frame)
+
+    # -------------------------------------------------------------------------
+    # 'optimize_pdf' command
+    # -------------------------------------------------------------------------
+    ps_optimize_pdf = subps.add_parser(
+        "optimize_pdf",
+        description="optimize PDF: garbage=4 + metadata + linearize in one pass",
+        epilog="specify input/output files and metadata as JSON strings",
+    )
+    ps_optimize_pdf.add_argument("-input",   required=True,  help="input filename")
+    ps_optimize_pdf.add_argument("-output",  required=True,  help="output filename")
+    ps_optimize_pdf.add_argument("-docinfo", required=False, help="docinfo as JSON")
+    ps_optimize_pdf.add_argument("-xmp",     required=False, help="XMP metadata as JSON")
+    ps_optimize_pdf.set_defaults(func=doc_optimize_pdf)
 
     # -------------------------------------------------------------------------
     # 'metadata' command

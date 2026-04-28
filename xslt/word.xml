@@ -68,7 +68,12 @@
                 <xsl:value-of select="contribution/doi"/>
             </span>
         </xsl:if>
-        <xsl:if test="contribution/doi = ''">
+        <xsl:if test="contribution/doi = '' and contribution/status = 'to_be_published'">
+        <xsl:text>, paper </xsl:text>
+        <xsl:value-of select="contribution/paper-code"></xsl:value-of>
+        <xsl:text>, to be published.</xsl:text>
+        </xsl:if>
+        <xsl:if test="contribution/doi = '' and contribution/status != 'to_be_published'">
         <xsl:text>, paper </xsl:text>
         <xsl:value-of select="contribution/paper-code"></xsl:value-of>
         <xsl:text>, unpublished.</xsl:text>

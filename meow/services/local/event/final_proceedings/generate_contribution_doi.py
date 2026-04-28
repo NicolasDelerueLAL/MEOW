@@ -26,14 +26,12 @@ from meow.tasks.local.doi.utils import (
     generate_doi_landing_page_url,
     generate_doi_name,
     generate_doi_path,
-    paper_size_mb,
 )
 
 from meow.utils.datetime import (
     datetime_now,
     format_datetime_dashed,
     format_datetime_doi,
-    format_datetime_doi_iso,
     format_datetime_full,
     format_datetime_range_doi,
 )
@@ -272,7 +270,6 @@ async def generate_conference_doi_task(
                 "affiliation": [
                     {"name": affiliation} for affiliation in editor.affiliations
                 ],
-                "contributorType": "Editor",
                 "nameIdentifiers": [
                     {
                         "nameIdentifier": index,
@@ -307,8 +304,8 @@ async def generate_conference_doi_task(
         ],
         "dates": [
             {
-                "date": format_datetime_range_doi(
-                    proceedings_data.event.start, proceedings_data.event.end
+                "date": format_datetime_dashed(
+                    datetime_now(proceedings_data.event.timezone)
                 ),
                 "dateType": "Issued",
             }
@@ -493,16 +490,16 @@ async def build_contribution_doi(
         issuance_date=format_datetime_doi(contribution.issuance)
         if contribution.issuance
         else "",
-        reception_date_iso=format_datetime_doi_iso(contribution.reception)
+        reception_date_iso=format_datetime_dashed(contribution.reception)
         if contribution.reception
         else "",
-        revisitation_date_iso=format_datetime_doi_iso(contribution.revisitation)
+        revisitation_date_iso=format_datetime_dashed(contribution.revisitation)
         if contribution.revisitation
         else "",
-        acceptance_date_iso=format_datetime_doi_iso(contribution.acceptance)
+        acceptance_date_iso=format_datetime_dashed(contribution.acceptance)
         if contribution.acceptance
         else "",
-        issuance_date_iso=format_datetime_doi_iso(contribution.issuance)
+        issuance_date_iso=format_datetime_dashed(contribution.issuance)
         if contribution.issuance
         else "",
         doi_label=doi_label,

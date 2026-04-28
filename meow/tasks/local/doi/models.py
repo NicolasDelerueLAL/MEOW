@@ -185,7 +185,8 @@ class ContributionDOI:
         attributes["creators"] = [
             dict(
                 name=f"{author.last_name}, {author.first_name}",
-                affiliation=[dict(name=list(author.affiliations))],
+                nameType="Personal",
+                affiliation=[dict(name=aff) for aff in author.affiliations],
                 nameIdentifiers=[
                     dict(
                         nameIdentifier=author.id,
@@ -234,8 +235,9 @@ class ContributionDOI:
         attributes["contributors"] = [
             dict(
                 name=f"{editor.last_name}, {editor.first_name}",
+                nameType="Personal",
                 contributorType="Editor",
-                affiliation=[dict(name=list(editor.affiliations))],
+                affiliation=[dict(name=aff) for aff in editor.affiliations],
                 nameIdentifiers=[
                     dict(
                         nameIdentifier=f"{index}",
@@ -249,19 +251,19 @@ class ContributionDOI:
 
         attributes["dates"] = [
             dict(
-                date=self.reception_date,
+                date=self.reception_date_iso,
                 dateType="Submitted",
             ),
             dict(
-                date=self.revisitation_date,
+                date=self.revisitation_date_iso,
                 dateType="Valid",
             ),
             dict(
-                date=self.acceptance_date,
+                date=self.acceptance_date_iso,
                 dateType="Accepted",
             ),
             dict(
-                date=self.issuance_date,
+                date=self.issuance_date_iso,
                 dateType="Issued",
             ),
         ]

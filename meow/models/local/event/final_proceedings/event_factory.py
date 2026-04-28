@@ -146,14 +146,22 @@ def event_person_factory(person: dict) -> PersonData:
     affiliation = person.get("affiliation").strip()
     multiple_affiliations = person.get("multiple_affiliations", [])
 
-    # id = slugify("-".join([first, last, affiliation]))
-    id = slugify(email)
+    affiliations = _generate_affiliations(affiliation, multiple_affiliations)
+
+    if email:
+        id = slugify(email)
+    else:
+        id = slugify("-".join([first, last, *sorted(affiliations)]))
+        logger.warning(
+            f"event_person_factory: author '{last}, {first}' has no email — "
+            f"using fallback ID '{id}' (name+affiliation)"
+        )
 
     event_person_data = PersonData(
         id=id,
         first=first,
         last=last,
-        affiliations=_generate_affiliations(affiliation, multiple_affiliations),
+        affiliations=affiliations,
         email=email,
     )
 

@@ -246,22 +246,29 @@ async def contribution_data_factory(
     config: ProceedingsConfig,
     callable: Callable,
 ) -> ContributionRef:
-    reference_status: str = (
-        ReferenceStatus.IN_PROCEEDINGS.value
-        if contribution.has_paper()
-        else ReferenceStatus.UNPUBLISHED.value
-    )
+    reference_status: str
+    reference_doi: str
 
-    reference_doi: str = (
-        generate_doi_name(
-            context=settings.get("doi_context", ""),
-            organization=settings.get("doi_organization", ""),
-            conference=settings.get("doi_conference", ""),
-            contribution=contribution.code,
+    if config.static_site_type == "prepress":
+        reference_status = ReferenceStatus.TO_BE_PUBLISHED.value
+        reference_doi = ""
+    else:
+        reference_status = (
+            ReferenceStatus.IN_PROCEEDINGS.value
+            if contribution.has_paper()
+            else ReferenceStatus.UNPUBLISHED.value
         )
-        if callable(contribution) > 0
-        else ""
-    )
+
+        reference_doi = (
+            generate_doi_name(
+                context=settings.get("doi_context", ""),
+                organization=settings.get("doi_organization", ""),
+                conference=settings.get("doi_conference", ""),
+                contribution=contribution.code,
+            )
+            if callable(contribution) > 0
+            else ""
+        )
 
     isbn: str = settings.get("isbn", "")
     issn: str = settings.get("issn", "0000-0000")
@@ -287,7 +294,7 @@ async def contribution_data_factory(
     return ContributionRef(
         id=contribution.id,
         code=contribution.code,
-        url=contribution.url,
+        url=f"https://jacow.org/{conference_code}/pdf/{contribution.code}.pdf",
         title=contribution.title,
         booktitle_short=booktitle_short,
         booktitle_long=booktitle_long,
@@ -309,6 +316,7 @@ async def contribution_data_factory(
         isbn=isbn,
         issn=issn,
         keywords=[k.name for k in contribution.keywords],
+        editors=list(contribution.editors),
     )
 
 
