@@ -29,6 +29,14 @@
             </author>
             {% endfor %}
         </authors-list>
+        <editors-list>
+            {% for editor in editors %}
+            <editor>
+                <first-name>{{ editor.first }}</first-name>
+                <last-name>{{ editor.last }}</last-name>
+            </editor>
+            {% endfor %}
+        </editors-list>
         <title>{{ title }}</title>
         <abstract>{{ abstract }}</abstract>
         <pages>

@@ -108,6 +108,10 @@ class EventFinalProceedingsTask(AbstractTask):
                 text="Concat Contributions Papers",
             ),
             ProceedingsTask(
+                code="optimize_proceedings_pdfs",
+                text="Optimize Proceedings PDFs",
+            ),
+            ProceedingsTask(
                 code="generate_doi_payloads",
                 text="Generate DOI payloads",
             ),

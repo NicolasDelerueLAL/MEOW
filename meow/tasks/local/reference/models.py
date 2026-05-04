@@ -21,6 +21,7 @@ class ReferenceStatus(Enum):
     IN_PROCEEDINGS = "in_proceedings"
     CONFERENCE = "conference"  # not handled!
     UNPUBLISHED = "unpublished"
+    TO_BE_PUBLISHED = "to_be_published"
 
 
 @dataclass
@@ -57,6 +58,7 @@ class ContributionRef:
     number_of_pages: int = field(default=0)
     doi: str = field(default="")
     keywords: list[str] = field(default_factory=list)
+    editors: list[PersonData] = field(default_factory=list)
 
     def as_dict(self) -> dict:
         dict_obj = asdict(self)

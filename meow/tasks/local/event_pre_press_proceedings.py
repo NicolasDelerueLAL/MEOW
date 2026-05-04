@@ -100,6 +100,10 @@ class EventPrePressProceedingsTask(AbstractTask):
                 text="Concat Contributions Papers",
             ),
             ProceedingsTask(
+                code="optimize_proceedings_pdfs",
+                text="Optimize Proceedings PDFs",
+            ),
+            ProceedingsTask(
                 code="generate_site_pages",
                 text="Generate Site Pages",
             ),

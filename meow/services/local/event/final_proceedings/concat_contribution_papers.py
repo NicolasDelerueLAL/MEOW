@@ -19,7 +19,7 @@ from meow.models.local.event.final_proceedings.proceedings_data_model import (
 )
 from meow.services.local.event.final_proceedings.event_pdf_utils import (
     brief_links,
-    pdf_linearize_qpdf,
+    # pdf_linearize_qpdf,  # DEPRECATED — sostituito da pdf_optimize_with_metadata
     vol_toc_links,
     vol_toc_pdf,
     pdf_unite_pdftk,
@@ -163,8 +163,9 @@ async def brief_pdf_task(
         else brief_pdf_results
     )
 
-    docinfo = get_brief_metadata(event_title)
-    metadata = get_brief_xmp_metadata(event_title)
+    # DEPRECATED — docinfo/xmp ora calcolati in optimize_proceedings_pdfs
+    # docinfo = get_brief_metadata(event_title)
+    # metadata = get_brief_xmp_metadata(event_title)
 
     try:
         if await pdf_unite_pdftk(str(brief_pdf_chunk_path), pdf_parts, False) != 0:
@@ -190,23 +191,22 @@ async def brief_pdf_task(
     finally:
         await brief_pdf_chunk_path.unlink(missing_ok=True)
 
-    try:
-        if (
-            await pdf_linearize_qpdf(
-                str(brief_pdf_links_path), str(brief_pdf_meta_path), docinfo, metadata
-            )
-            != 0
-        ):
-            raise BaseException("Error in Proceedings at a Glance clean")
-    except BaseException as be:
-        logger.error(be, exc_info=True)
-        raise be
-    finally:
-        await brief_pdf_links_path.unlink(missing_ok=True)
+    # DEPRECATED — linearize+metadata ora in optimize_proceedings_pdfs (single-pass fitz)
+    # try:
+    #     if (
+    #         await pdf_linearize_qpdf(
+    #             str(brief_pdf_links_path), str(brief_pdf_meta_path), docinfo, metadata
+    #         )
+    #         != 0
+    #     ):
+    #         raise BaseException("Error in Proceedings at a Glance clean")
+    # except BaseException as be:
+    #     logger.error(be, exc_info=True)
+    #     raise be
+    # finally:
+    #     await brief_pdf_links_path.unlink(missing_ok=True)
 
-    proceedings_data.proceedings_brief_size = (await brief_pdf_meta_path.stat()).st_size
-
-    logger.info(f"proceedings_brief_size: {proceedings_data.proceedings_brief_size}")
+    await brief_pdf_links_path.rename(brief_pdf_meta_path)
 
 
 async def vol_pdf_task(
@@ -268,8 +268,9 @@ async def vol_pdf_task(
     pdf_parts = pdf_parts + [str(vol_toc_pdf_path)] if vol_toc_pdf_path else []
     pdf_parts = pdf_parts + vol_pdf_results
 
-    docinfo = get_vol_metadata(event_title)
-    metadata = get_vol_xmp_metadata(event_title)
+    # DEPRECATED — docinfo/xmp ora calcolati in optimize_proceedings_pdfs
+    # docinfo = get_vol_metadata(event_title)
+    # metadata = get_vol_xmp_metadata(event_title)
 
     try:
         if await pdf_unite_pdftk(str(vol_pdf_chunk_path), pdf_parts, False) != 0:
@@ -298,23 +299,22 @@ async def vol_pdf_task(
         await vol_pdf_chunk_path.unlink(missing_ok=True)
         await vol_toc_links_path.unlink(missing_ok=True)
 
-    try:
-        if (
-            await pdf_linearize_qpdf(
-                str(vol_pdf_links_path), str(vol_pdf_meta_path), docinfo, metadata
-            )
-            != 0
-        ):
-            raise BaseException("Error in Proceedings Volume clean")
-    except BaseException as be:
-        logger.error(be, exc_info=True)
-        raise be
-    finally:
-        await vol_pdf_links_path.unlink(missing_ok=True)
+    # DEPRECATED — linearize+metadata ora in optimize_proceedings_pdfs (single-pass fitz)
+    # try:
+    #     if (
+    #         await pdf_linearize_qpdf(
+    #             str(vol_pdf_links_path), str(vol_pdf_meta_path), docinfo, metadata
+    #         )
+    #         != 0
+    #     ):
+    #         raise BaseException("Error in Proceedings Volume clean")
+    # except BaseException as be:
+    #     logger.error(be, exc_info=True)
+    #     raise be
+    # finally:
+    #     await vol_pdf_links_path.unlink(missing_ok=True)
 
-    proceedings_data.proceedings_volume_size = (await vol_pdf_meta_path.stat()).st_size
-
-    logger.info(f"proceedings_volume_size: {proceedings_data.proceedings_volume_size}")
+    await vol_pdf_links_path.rename(vol_pdf_meta_path)
 
 
 async def unlink_files(files_data: list[FileData], cache_dir: Path):
@@ -460,101 +460,8 @@ async def concat_chunks(
             raise BaseException("Error in Proceedings Volume generation")
 
 
-def get_vol_xmp_metadata(event_title):
-    """https://developer.adobe.com/xmp/docs/XMPNamespaces/dc/"""
-
-    meta: dict = {
-        "dc:title": f"{event_title} - Proceedings Volume",
-        "dc:subject": "Proceedings Volume",
-        # 'dc:description': contribution.doi_data.abstract,
-        "dc:language": "en-us",
-        "dc:creator": ["JACoW - Joint Accelerator Conferences Website"],
-        # 'pdf:keywords': contribution.keywords_meta,
-        # 'pdf:producer': "JACoW Conference Assembly Tool (CAT)",
-        "xmp:CreatorTool": "JACoW Conference Assembly Tool (CAT)",
-        # 'xmp:Identifier': contribution.doi_data.doi_identifier,
-        "xmp:ModifyDate": format_datetime_doi_iso(datetime.now()),
-        # 'xmp:MetadataDate': format_datetime_doi_iso(datetime.now()),
-        "xmp:CreateDate": format_datetime_doi_iso(datetime.now()),
-    }
-
-    return meta
-
-
-def get_vol_metadata(event_title):
-    # metadata = dict(
-    #     author="JACoW - Joint Accelerator Conferences Website",
-    #     producer=None,
-    #     creator="JACoW Conference Assembly Tool (CAT)",
-    #     title=f"{event_title} - Proceedings Volume",
-    #     format=None,
-    #     encryption=None,
-    #     creationDate=None,
-    #     modDate=None,
-    #     subject="The complete volume of papers",
-    #     keywords=None,
-    #     trapped=None,
-    # )
-
-    metadata = {
-        "/Author": "JACoW - Joint Accelerator Conferences Website",
-        "/Producer": "JACoW Conference Assembly Tool (CAT)",
-        "/Creator": "JACoW Conference Assembly Tool (CAT)",
-        "/Title": f"{event_title} - Proceedings Volume",
-        "/CreationDate": format_datetime_doi_iso(datetime.now()),
-        "/ModDate": format_datetime_doi_iso(datetime.now()),
-        "/Subject": "The complete volume of papers",
-        "/Keywords": f"JACoW, {event_title}, Proceedings",
-    }
-
-    return metadata
-
-
-def get_brief_xmp_metadata(event_title):
-    """https://developer.adobe.com/xmp/docs/XMPNamespaces/dc/"""
-
-    meta: dict = {
-        "dc:title": f"{event_title} - Proceedings at a Glance",
-        "dc:subject": "Proceedings at a Glance",
-        # 'dc:description': contribution.doi_data.abstract,
-        "dc:language": "en-us",
-        "dc:creator": ["JACoW - Joint Accelerator Conferences Website"],
-        "pdf:keywords": f"JACoW, {event_title}, Proceedings at a Glance",
-        # 'pdf:producer': "",
-        "xmp:CreatorTool": "JACoW Conference Assembly Tool (CAT)",
-        # 'xmp:Identifier': contribution.doi_data.doi_identifier,
-        "xmp:ModifyDate": format_datetime_doi_iso(datetime.now()),
-        # 'xmp:MetadataDate': format_datetime_doi_iso(datetime.now()),
-        "xmp:CreateDate": format_datetime_doi_iso(datetime.now()),
-    }
-
-    return meta
-
-
-def get_brief_metadata(event_title):
-    # metadata = dict(
-    #     author="JACoW - Joint Accelerator Conferences Website",
-    #     producer=None,
-    #     creator="JACoW Conference Assembly Tool (CAT)",
-    #     title=f"{event_title} - Proceedings at a Glance",
-    #     format=None,
-    #     encryption=None,
-    #     creationDate=None,
-    #     modDate=None,
-    #     subject="First page only of all papers with hyperlinks to complete versions",
-    #     keywords=None,
-    #     trapped=None,
-    # )
-
-    metadata = {
-        "/Author": "JACoW - Joint Accelerator Conferences Website",
-        "/Producer": "JACoW Conference Assembly Tool (CAT)",
-        "/Creator": "JACoW Conference Assembly Tool (CAT)",
-        "/Title": f"{event_title} - Proceedings at a Glance",
-        "/CreationDate": format_datetime_doi_iso(datetime.now()),
-        "/ModDate": format_datetime_doi_iso(datetime.now()),
-        "/Subject": "First page only of all papers with hyperlinks to complete versions",
-        "/Keywords": f"JACoW, {event_title}, Proceedings at a Glance",
-    }
-
-    return metadata
+# DEPRECATED — spostate in optimize_proceedings_pdfs.py
+# def get_vol_xmp_metadata(event_title): ...
+# def get_vol_metadata(event_title): ...
+# def get_brief_xmp_metadata(event_title): ...
+# def get_brief_metadata(event_title): ...

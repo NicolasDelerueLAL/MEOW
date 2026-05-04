@@ -96,6 +96,11 @@
     <xsl:when test="contribution/status = 'conference'">
         <xsl:text>, this conference.</xsl:text>
     </xsl:when>
+    <xsl:when test="contribution/status = 'to_be_published'">
+        <xsl:text>, paper </xsl:text>
+        <xsl:value-of select="contribution/paper-code"></xsl:value-of>
+        <xsl:text>, to be published.</xsl:text>
+    </xsl:when>
     <xsl:otherwise>
         <xsl:text>, paper </xsl:text>
         <xsl:value-of select="contribution/paper-code"></xsl:value-of>

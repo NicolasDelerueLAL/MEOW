@@ -36,27 +36,10 @@ class PersonData:
         return affiliations_str
 
     def __eq__(self, other: "PersonData"):
-        return (
-            self.first == other.first
-            and self.last == other.last
-            and
-            # set(self.affiliations) == set(other.affiliations) and
-            self.id == other.id
-        )
+        return self.id == other.id
 
     def __hash__(self):
-        return hash(
-            (
-                "first",
-                self.first,
-                "last",
-                self.last,
-                "affiliations",
-                ",".join(self.affiliations),
-                "id",
-                self.id,
-            )
-        )
+        return hash(("id", self.id))
 
     def as_dict(self) -> dict:
         return {

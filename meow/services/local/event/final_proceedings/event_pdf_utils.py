@@ -63,6 +63,8 @@ def get_pdfunite_cmd():
     return str(Path("pdfunite"))  # str(Path("bin", "pdfunite"))
 
 
+# Ancora usata da write_slides_metadata e write_posters_metadata (con None, None).
+# Per brief/volume è sostituita da pdf_optimize_with_metadata (single-pass fitz).
 async def pdf_linearize_qpdf(
     in_path: str, out_path: str, docinfo: dict | None, metadata: dict | None
 ):
@@ -74,8 +76,6 @@ async def pdf_linearize_qpdf(
 def _pdf_linearize_qpdf(
     in_path: str, out_path: str, docinfo: dict | None, metadata: dict | None
 ):
-    """ """
-
     with open(in_path) as pdf_doc:
         if docinfo:
             for key in docinfo:
@@ -85,18 +85,11 @@ def _pdf_linearize_qpdf(
             set_pikepdf_as_editor=False, update_docinfo=False
         ) as pdf_meta:
             pdf_meta.clear()
-
-            # print(pdf_meta)
-
-            # if docinfo:
-            #     pdf_meta.load_from_docinfo(
-            #         docinfo, delete_missing=True, raise_failure=True)
-
             if metadata:
                 for key in metadata:
                     pdf_meta[key] = metadata[key]
 
-        pdf_doc.save(out_path, linearize=True, fix_metadata_version=True)
+        pdf_doc.save(out_path, fix_metadata_version=True)
 
     return 0
 
@@ -709,6 +702,37 @@ async def pdf_clean_mutool(read_path: str, write_path: str) -> int:
     #     print(res.returncode)
     #     print(res.stdout.decode())
     #     print(res.stderr.decode())
+
+    return 0 if res and res.returncode == 0 else 1
+
+
+async def pdf_optimize_with_metadata(
+    read_path: str, write_path: str, docinfo: dict, xmp: dict
+) -> int:
+    from meow.utils.serialization import json_encode
+
+    cmd = [
+        get_python_cmd(), "-m", "meow", "optimize_pdf",
+        "-input",   read_path,
+        "-output",  write_path,
+        "-docinfo", json_encode(docinfo).decode("utf-8"),
+        "-xmp",     json_encode(xmp).decode("utf-8"),
+    ]
+
+    logger.info(" ".join(cmd))
+
+    res = await run_cmd(cmd)
+
+    return 0 if res and res.returncode == 0 else 1
+
+
+# DEPRECATED — sostituito da pdf_optimize_with_metadata (single-pass fitz)
+async def pdf_optimize_pymupdf(read_path: str, write_path: str) -> int:
+    cmd = [get_python_cmd(), "-m", "fitz", "clean", "-garbage", "4", "-linear", read_path, write_path]
+
+    logger.info(" ".join(cmd))
+
+    res = await run_cmd(cmd)
 
     return 0 if res and res.returncode == 0 else 1
 

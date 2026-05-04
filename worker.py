@@ -64,7 +64,7 @@ async def app_post():
 
 
 async def main() -> None:
-    logger.info(f"Started worker process [{os.getpid()}]")
+    logger.info(f"*** Started worker process [{os.getpid()}]")
 
     try:
         await app_pre()
