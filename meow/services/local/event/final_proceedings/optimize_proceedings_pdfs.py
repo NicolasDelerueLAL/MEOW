@@ -113,7 +113,7 @@ async def optimize_proceedings_pdfs(
                 docinfo_fn(event_title),
                 xmp_fn(event_title),
             ) != 0:
-                raise BaseException(f"Error optimizing {pdf_name}")
+                raise RuntimeError(f"Error optimizing {pdf_name}")
 
             await src.unlink()
             await tmp.rename(src)
@@ -124,7 +124,7 @@ async def optimize_proceedings_pdfs(
 
             setattr(proceedings_data, size_attr, size_after)
             client_logs.append(f"{label}: {size_before / 1_000_000:.2f} MB → {size_after / 1_000_000:.2f} MB ({reduction:.1f}% reduction)")
-        except BaseException as be:
+        except Exception as be:
             logger.error(be, exc_info=True)
             await tmp.unlink(missing_ok=True)
 
