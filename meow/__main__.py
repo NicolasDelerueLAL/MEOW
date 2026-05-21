@@ -946,7 +946,7 @@ def doc_optimize_pdf(args) -> None:
     if args.xmp:
         doc.set_xml_metadata(_build_xmp_xml(json.loads(args.xmp)))
 
-    doc.save(args.output, deflate=1, linear=True)
+    doc.save(args.output, garbage=4)
     doc.close()
     del doc
 

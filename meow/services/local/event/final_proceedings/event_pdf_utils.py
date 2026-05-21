@@ -709,21 +709,31 @@ async def pdf_clean_mutool(read_path: str, write_path: str) -> int:
 async def pdf_optimize_with_metadata(
     read_path: str, write_path: str, docinfo: dict, xmp: dict
 ) -> int:
+    from os import unlink
     from meow.utils.serialization import json_encode
+
+    tmp_path = write_path + ".garbage.pdf"
 
     cmd = [
         get_python_cmd(), "-m", "meow", "optimize_pdf",
         "-input",   read_path,
-        "-output",  write_path,
+        "-output",  tmp_path,
         "-docinfo", json_encode(docinfo).decode("utf-8"),
         "-xmp",     json_encode(xmp).decode("utf-8"),
     ]
 
     logger.info(" ".join(cmd))
 
-    res = await run_cmd(cmd)
-
-    return 0 if res and res.returncode == 0 else 1
+    try:
+        res = await run_cmd(cmd)
+        if not res or res.returncode != 0:
+            return 1
+        return await pdf_clean_qpdf(tmp_path, write_path)
+    finally:
+        try:
+            unlink(tmp_path)
+        except FileNotFoundError:
+            pass
 
 
 # DEPRECATED — sostituito da pdf_optimize_with_metadata (single-pass fitz)
