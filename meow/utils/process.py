@@ -55,10 +55,10 @@ async def run_cmd(command: list[str]) -> CompletedProcess[bytes] | None:
     except CalledProcessError as err:
 
         if err:
-            print(" ".join(command))
-            print(err.returncode)
-            print(err.stdout.decode())
-            print(err.stderr.decode())
+            logger.error("cmd: %s", " ".join(command))
+            logger.error("returncode: %s", err.returncode)
+            logger.error("stdout: %s", err.stdout.decode() if err.stdout else "")
+            logger.error("stderr: %s", err.stderr.decode() if err.stderr else "")
 
         logger.error(err, exc_info=True)
 
