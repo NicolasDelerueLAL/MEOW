@@ -124,7 +124,7 @@ async def write_metadata_task(
 
     pre_print: str = (
         settings.get("pre_print", "This is a preprint")
-        if contribution.peer_reviewing_accepted
+        if contribution.peer_reviewing_accepted or preprint_marking_requested
         else ""
     )
 
