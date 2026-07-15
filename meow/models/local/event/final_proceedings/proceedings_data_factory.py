@@ -50,8 +50,8 @@ def proceedings_data_factory(event: Any, sessions: list, contributions: list,
 
     cat_publish_alias: str | None = settings.get('cat_publish_alias', 'CAT_publish')
 
-    preprint_marking_alias: str | None = settings.get('reprint_marking_alias', 'preprint marking')
-    preprint_request_alias: str | None = settings.get('reprint_request_alias', 'i wish my paper to be marked as preprint')
+    preprint_marking_alias: str | None = settings.get('preprint_marking_alias', 'preprint marking')
+    preprint_request_alias: str | None = settings.get('preprint_request_alias', 'i wish my paper to be marked as preprint')
     
 
     contributions_data: list[ContributionData] = [
