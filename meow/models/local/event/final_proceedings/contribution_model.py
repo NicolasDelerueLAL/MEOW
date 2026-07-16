@@ -363,11 +363,11 @@ class ContributionData:
         field_value: str = ""
 
         for _field in self.field_values:
-            if preprint_marking_alias in _field.name.lower() ==  and _field.value:
+            if preprint_marking_alias.lower() in _field.name.lower() ==  and _field.value:
                 field_value = _field.value.lower()
                 break
 
-        return preprint_request_alias in field_value
+        return preprint_request_alias.lower() in field_value
 
     def duplicate_of_code(self, duplicate_of_alias: str) -> str | None:
         # after duplicate of is initialized, use this condition
